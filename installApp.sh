@@ -30,7 +30,7 @@ timeStamp=$(date +"%F %T")
 pkgName=$(basename "$downloadUrl")
 
 # Directory where the file will be downloaded to
-downloadDirectory="/Library/Tapad/packages/"
+downloadDirectory="PATH Where to downoad the files to"
 
 # Directory where DMG would be mounted to
 dmgMount="$downloadDirectory/mount"
@@ -106,7 +106,7 @@ installApplication() {
 downloadFile() {
 	createDirectory $downloadDirectory #Create directory $downloadDirectory, continue if directory already exists
 	cd $downloadDirectory
-	printf "Downloading File....\n" # Print message for Jamf
+	printf "Downloading File....\n" # Print message
 	curl $downloadUrl -O -L #Download file without changing its name.
 }
 
