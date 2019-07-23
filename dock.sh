@@ -11,13 +11,13 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 # Apps that are installed in the '/Applications/' directory
-Apps=("List of app here")
+Apps=("Firefox.app" "Slack.app" "Sublime Text.app" "1Password 7.app" "Messages.app" "System Preferences.app" "Github Desktop.app" "PostMan.app" "xcode.app" "App store.app")
 
 #Apps that are installed in the '/Applications/Utitlies/' directory
-utilApps=("")
+utilApps=("Terminal.app")
 
 #Folders to add to the dock
-userFolders=("")
+userFolders=("Downloads")
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # Variables
