@@ -1,16 +1,15 @@
 #!/bin/bash
-
+debugMode=false #True/False
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # Jamf policy parameters
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-
+if  [[ $debugMode = true ]]; then echo oof something must of went wrong; sleep 5; set -x; fi
 # Link must be a direct link to the file.
 # e.g. 	https://dl.google.com/chrome/mac/stable/GGRO/googlechrome.dmg
 # For security's sake, ONLY USE HTTPS LINKS FROM KNOWN GOOD VENDOR SOURCES
 # A null $4 returns an errors
 # in Jamf, parameters 1–3 are predefined as mount point, computer name, and username
 downloadUrl="$4"
-
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # Check to see if values are added in Jamf policy
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -19,7 +18,7 @@ if [ -z "$4" ]; then
 		printf "Parameter 4 is empty. %s\n" "Populate parameter 4 with the package download URL."
 		exit 3
 fi
-	
+
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # Variables
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -30,14 +29,19 @@ timeStamp=$(date +"%F %T")
 pkgName=$(basename "$downloadUrl")
 
 # Directory where the file will be downloaded to
-downloadDirectory="PATH Where to downoad the files to"
+downloadDirectory="~/Desktop/"
 
 # Directory where DMG would be mounted to
 dmgMount="$downloadDirectory/mount"
 
-
 # Get download file extension
 downloadExt="${pkgName##*.}"
+
+## Get OS version and adjust for use with the URL string
+OSvers_URL=$( sw_vers -productVersion | sed 's/[.]/_/g' )
+
+## Set the User Agent string for use with curl
+userAgent="Mozilla/5.0 (Macintosh; Intel Mac OS X ${OSvers_URL}) AppleWebKit/535.6.2 (KHTML, like Gecko) Version/5.2 Safari/535.6.2"
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # Functions
