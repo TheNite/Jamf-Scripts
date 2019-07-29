@@ -19,6 +19,7 @@ if [ -z "$4" ]; then
 		exit 3
 fi
 
+
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # Variables
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -29,7 +30,7 @@ timeStamp=$(date +"%F %T")
 pkgName=$(basename "$downloadUrl")
 
 # Directory where the file will be downloaded to
-downloadDirectory="~/Desktop/"
+downloadDirectory="/temp/COMPANY/Downloaded"
 
 # Directory where DMG would be mounted to
 dmgMount="$downloadDirectory/mount"
@@ -48,16 +49,24 @@ userAgent="Mozilla/5.0 (Macintosh; Intel Mac OS X ${OSvers_URL}) AppleWebKit/535
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 createDirectory() {
-    if [ ! -d $1 ]
-        then
+    if [ ! -d $1 ]; then
+    	echo "directory not found...making $downloadDirectory"
         mkdir -p $1
     fi
+    echo "found $downloadDirectory"
 }
 
 cleanUp(){
+	echo "Cleaning up......"
 	for filename in $downloadDirectory/*; do
+		printf "deleting $filename \n"
 		rm -rf $filename
 	done
+	echo "done"
+}
+
+installApp() {
+	cp -pPR "$dmgMount"/*.app /Applications
 }
 
 installDmg() {
@@ -68,14 +77,38 @@ installDmg() {
 			# -mountpoint to specify mount point
 			hdiutil attach $downloadDirectory/$pkgName -nobrowse -noverify -mountpoint $dmgMount
 			if [ -e "$dmgMount"/*.app ]; then
-				printf "Found .app inside DMG \n"
-      			cp -pPR "$dmgMount"/*.app /Applications
+				printf A"Found .app inside DMG \n"
+      			install
     		elif [ -e "$dmgMount"/*.pkg ]; then
     			print "Found .pkg inside dmg \n"
       			pkgName=$(ls -1 "$dmgMount" | grep .pkg | head -1)
       			installer -allowUntrusted -verboseR -pkg "$dmgMount"/"$pkgName" -target /
     		fi
     		hdiutil detach $dmgMount
+}
+
+
+installZippedApp() {
+	unzip $downloadDirectory/$pkgName &
+	echo "Unzipping......please wait"
+	wait
+	echo "Finish unzipping"
+
+	if [ -e "$downloadDirectory"/*.app ]; then
+		printf "Extracted .app file......copying application to Applications folder\n"
+		cp -pPR $downloadDirectory/*.app /Applications
+	else
+		printf "No .app file found in zip\n"
+	fi
+}
+
+printErrorMessage() {
+	printf "$timeStamp %s\n" "$downloadExt" "is an unknown file type."
+	printf "$timeStamp %s\n" "Downloaded $pkgName from..."
+	printf "$timeStamp %s\n" "$downloadUrl"
+	rm -rf "$downloadDirectory"/"$pkgName"
+	printf "$timeStamp %s\n" "Deleted $downloadFile."
+	exit 4
 }
 
 installApplication() {
@@ -91,18 +124,16 @@ installApplication() {
 				fi
 			;;
 		app) 
-			cp -pPR "$dmgMount"/*.app /Applications
+			cp -pPR "$downloadDirectory"/*.app /Applications
 			;;
 		dmg)
 			installDmg
 			;;
+		zip)
+			installZippedApp
+			;;
 		*)
-			printf "$timeStamp %s\n" "Downloaded $pkgName from..."
-			printf "$timeStamp %s\n" "$downloadUrl"
-			printf "$timeStamp %s\n" "is an unknown file type."
-			rm -rf "$downloadDirectory"/"$pkgName"
-			printf "$timeStamp %s\n" "Deleted $downloadFile."
-			exit 4
+			printErrorMessage
 	esac
 
 }
