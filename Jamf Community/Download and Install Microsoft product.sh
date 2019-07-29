@@ -33,7 +33,7 @@ ABOUT_THIS_SCRIPT
 # enter the Microsoft fwlink (permalink) product ID
 # or leave blank if using a $4 script parameter with Jamf Pro
 
-linkID="525133" # e.g. "525133" for Office 2019
+linkID="" # e.g. "525133" for Office 2019
 
 # 525133 - Office 2019 for Mac SKUless download (aka Office 365)
 # 2009112 - Office 2019 for Mac BusinessPro SKUless download (aka Office 365 with Teams)
