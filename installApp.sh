@@ -142,7 +142,7 @@ downloadFile() {
 	createDirectory $downloadDirectory #Create directory $downloadDirectory, continue if directory already exists
 	cd $downloadDirectory
 	printf "Downloading File....\n" # Print message
-	if [ "$downloadUrl" == *"postman"* ]; then
+	if [ "$downloadUrl" = *"postman"* ]; then
 		
 	fi 
 	curl $downloadUrl -O -L #Download file without changing its name.
