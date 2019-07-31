@@ -18,8 +18,6 @@ if [ -z "$4" ]; then
 		printf "Parameter 4 is empty. %s\n" "Populate parameter 4 with the package download URL."
 		exit 3
 fi
-
-
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # Variables
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -53,7 +51,7 @@ createDirectory() {
     	echo "directory not found...making $downloadDirectory"
         mkdir -p $1
     fi
-    echo "found $downloadDirectory"
+    printf "found $downloadDirectory \n Do not need to create directory"
 }
 
 cleanUp(){
@@ -95,7 +93,7 @@ installZippedApp() {
 	echo "Finish unzipping"
 
 	if [ -e "$downloadDirectory"/*.app ]; then
-		printf "Extracted .app file......copying application to Applications folder\n"
+		printf "Extracted .app file......\nCopying application to Applications folder\n"
 		cp -pPR $downloadDirectory/*.app /Applications
 	else
 		printf "No .app file found in zip\n"
@@ -107,7 +105,7 @@ printErrorMessage() {
 	printf "$timeStamp %s\n" "Downloaded $pkgName from..."
 	printf "$timeStamp %s\n" "$downloadUrl"
 	rm -rf "$downloadDirectory"/"$pkgName"
-	printf "$timeStamp %s\n" "Deleted $downloadFile."
+	printf "$timeStamp %s\n" "Deleted $pkgName"
 	exit 4
 }
 
@@ -141,11 +139,20 @@ installApplication() {
 downloadFile() {
 	createDirectory $downloadDirectory #Create directory $downloadDirectory, continue if directory already exists
 	cd $downloadDirectory
-	printf "Downloading File....\n" # Print message
-	if [ "$downloadUrl" = *"postman"* ]; then
-		
-	fi 
-	curl $downloadUrl -O -L #Download file without changing its name.
+	printf "Downloading File....\n $downloadUrl" # Print message
+	if [[ "$downloadUrl" == *"postman"* ]] || [[ "$downloadUrl" == *"pstmn.io"* ]]; then
+		echo "Downloading Postman"
+		pkgName="postman"
+		downloadExt="zip"
+		curl -O -A $userAgent -L $downloadUrl > $downloadDirectory/postman.zip
+	elif [[ "$downloadUrl" == *"slack"* ]]; then
+		echo "Downloading Slack"
+		pkgName="slack"
+		downloadExt="dmg"
+		curl -O -A $userAgent -L $downloadUrl > $downloadDirectory/slack.dmg
+	else
+		curl $downloadUrl -O -L #Download file without changing its name.
+	fi
 }
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
