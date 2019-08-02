@@ -24,7 +24,7 @@ timeStamp=$(date +"%F %T")
 pkgName=$(basename "$downloadUrl")
 
 # Directory where the file will be downloaded to
-downloadDirectory="/Cedar/Downloaded"
+downloadDirectory="/COMPANY/Downloaded"
 
 # Directory where DMG would be mounted to
 dmgMount="$downloadDirectory/mount"
