@@ -1,9 +1,4 @@
 #!/bin/bash
-debugMode=false #True/False
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-# Jamf policy parameters
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-if  [[ $debugMode = true ]]; then echo oof something must of went wrong; sleep 5; set -x; fi
 # Link must be a direct link to the file.
 # e.g. 	https://dl.google.com/chrome/mac/stable/GGRO/googlechrome.dmg
 # For security's sake, ONLY USE HTTPS LINKS FROM KNOWN GOOD VENDOR SOURCES
@@ -18,6 +13,7 @@ if [ -z "$4" ]; then
 		printf "Parameter 4 is empty. %s\n" "Populate parameter 4 with the package download URL."
 		exit 3
 fi
+
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # Variables
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -28,7 +24,7 @@ timeStamp=$(date +"%F %T")
 pkgName=$(basename "$downloadUrl")
 
 # Directory where the file will be downloaded to
-downloadDirectory="/temp/COMPANY/Downloaded"
+downloadDirectory="/Cedar/Downloaded"
 
 # Directory where DMG would be mounted to
 dmgMount="$downloadDirectory/mount"
@@ -63,10 +59,6 @@ cleanUp(){
 	echo "done"
 }
 
-installApp() {
-	cp -pPR "$dmgMount"/*.app /Applications
-}
-
 installDmg() {
 		# If container is a .dmg:
 			# Mount installer container
@@ -75,8 +67,8 @@ installDmg() {
 			# -mountpoint to specify mount point
 			hdiutil attach $downloadDirectory/$pkgName -nobrowse -noverify -mountpoint $dmgMount
 			if [ -e "$dmgMount"/*.app ]; then
-				printf A"Found .app inside DMG \n"
-      			install
+				printf "Found .app inside DMG \n"
+      			cp -pPR "$dmgMount"/*.app /Applications
     		elif [ -e "$dmgMount"/*.pkg ]; then
     			print "Found .pkg inside dmg \n"
       			pkgName=$(ls -1 "$dmgMount" | grep .pkg | head -1)
