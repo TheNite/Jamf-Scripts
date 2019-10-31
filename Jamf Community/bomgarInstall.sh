@@ -17,7 +17,7 @@ sleep 5
     hdiutil detach /Volumes/bomgar-scc
 
 # Wait for the unmount to complete
-    sleep 15
+    sleep 5
 
 # Delete the disk image
     rm -R /Library/Application\ Support/JAMF/Waiting\ Room/bomgar-scc-w0edc30zifyh6y1ge1fgz6x888heex7zz5yzgi6c40hc90.dmg
