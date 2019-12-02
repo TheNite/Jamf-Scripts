@@ -58,6 +58,7 @@ caffeinatepid=$!
 
 ##### Start of ceremony visuals #####
 
+
 writeToLog "Starting application installation using jamf"
 
 writeToJamfLog "Fake:Installing CBDefense-1.0.0.pkg..."
@@ -80,12 +81,8 @@ writeToJamfLog "Fake:Installing homebrew-1.0.0.pkg..."
 ${jamfBinary} policy -event "isntall_homebrew"
 writeToJamfLog "Fake:Successfully installed homebrew-1.0.pkg.."
 
-writeToJamfLog "Fake:Installing brewpackages-1.0.0.pkg..."
-${jamfBinary} policy -event "install_homebrew_packages"
-writeToJamfLog "Fake:Successfully installed brewpackages-1.0.0.pkg.."
-
 writeToJamfLog "Fake:Installing Zoom-1.0.0.pkg..."
-${jamfBinary} policy -event "install_zoom"
+${jamfBinary} policy -event "install_zoomclient"
 writeToJamfLog "Fake:Successfully installed Zoom-1.0.0.pkg.."
 
 writeToJamfLog "Fake:Installing office365-1.0.0.pkg..."
@@ -115,6 +112,7 @@ ${jamfBinary} policy -event "update_Inventory" # update computer inventory
 writeToJamfLog "Fake:Successfully installed setupfinish-1.0.0.pkg.."
 
 #### #### End Ceremonry visuals. #### ####
+
 
 ##### Ceremony post-install management
 
