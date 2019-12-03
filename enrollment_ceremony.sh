@@ -20,13 +20,13 @@ loggedInUser() {
 writeToLog() {
 	if [[ "$(/usr/bin/id -u)" -eq 0 ]]; then # check for root access
 		if [[ -f "$logFile" ]];then #Check if file exist
-			echo $1
-			echo $currentTime $scriptName $1 >> $logFile
+			echo $@
+			echo $currentTime $scriptName: $@ >> $logFile
 		else
 			touch $logFile	
-			echo $1
+			echo $@
 			echo $currentTime $scriptName "Created log file....." >> $logFile
-			echo $currentTime $scriptName $1 >> $logFile
+			echo $currentTime $scriptName $@ >> $logFile
 		fi
 	else
 		echo "Root access not found"
@@ -38,7 +38,7 @@ writeToLog() {
 writeToJamfLog() {
 	touch $jamfLog
 	writeToLog "JAMF-LOG: $1"
-	echo $currentTime $scriptName $1 >> $jamfLog
+	echo $currentTime $scriptName $@ >> $jamfLog
 }
 
 # Check current login user
@@ -54,6 +54,7 @@ writeToLog "Current login user: $(loggedInUser)"
 writeToLog "Caffeinate computer"
 caffeinate -d -i -m -s -u &
 caffeinatepid=$! 
+writeToLog "Caffeinatepid = $caffeinatepid"
 
 
 ##### Start of ceremony visuals #####
@@ -62,31 +63,31 @@ caffeinatepid=$!
 writeToLog "Starting application installation using jamf"
 
 writeToJamfLog "Fake:Installing CBDefense-1.0.0.pkg..."
-${jamfBinary} policy -event "install_cbdefense"
+writeToLog $(${jamfBinary} policy -event "install_cbdefense")
 writeToJamfLog "Fake:Successfully installed CBDefense-1.0.0.pkg.."
 
 writeToJamfLog "Fake:Installing GoogleChrome-1.0.0.pkg..."
-${jamfBinary} policy -event "install_chrome"
+writeToLog $(${jamfBinary} policy -event "install_chrome")
 writeToJamfLog "Fake:Successfully installed GoogleChrome-1.0.0.pkg.."
 
 writeToJamfLog "Fake:Installing Slack-1.0.0.pkg..."
-${jamfBinary} policy -event "install_slack"
+writeToLog $(${jamfBinary} policy -event "install_slack")
 writeToJamfLog "Fake:Successfully installed Slack-1.0.0.pkg.."
 
 writeToJamfLog "Fake:Installing 1Password-1.0.0.pkg..."
-${jamfBinary} policy -event "install_1password"
+writeToLog $(${jamfBinary} policy -event "install_1password")
 writeToJamfLog "Fake:Successfully installed 1Password-1.0.0.pkg.."
 
 writeToJamfLog "Fake:Installing homebrew-1.0.0.pkg..."
-${jamfBinary} policy -event "isntall_homebrew"
+writeToLog $(${jamfBinary} policy -event "isntall_homebrew")
 writeToJamfLog "Fake:Successfully installed homebrew-1.0.pkg.."
 
 writeToJamfLog "Fake:Installing Zoom-1.0.0.pkg..."
-${jamfBinary} policy -event "install_zoomclient"
+writeToLog $(${jamfBinary} policy -event "install_zoomclient")
 writeToJamfLog "Fake:Successfully installed Zoom-1.0.0.pkg.."
 
 writeToJamfLog "Fake:Installing office365-1.0.0.pkg..."
-${jamfBinary} policy -event	"install_office365"
+writeToLog $(${jamfBinary} policy -event	"install_office365")
 writeToJamfLog "Fake:Successfully installed office365-1.0.0.pkg.."
 
 
@@ -95,19 +96,19 @@ writeToJamfLog "Fake:Successfully installed office365-1.0.0.pkg.."
 writeToJamfLog "Fake:Installing setupfinish-1.0.0.pkg..."
 
 writeToLog "Installing Google file stream"
-${jamfBinary} policy -event "install_google_filestream" # install google filestream
+writeToLog $(${jamfBinary} policy -event "install_google_filestream") # install google filestream
 
 writeToLog "Installing homebrew packages"
-${jamfBinary} policy -event "install_homebrew_packages" # install homebrew packages
+writeToLog $(${jamfBinary} policy -event "install_homebrew_packages") # install homebrew packages
 
 writeToLog "enforcing filevault2"
-${jamfBinary} policy -event "enforce_FV2" # enforce filevault
+writeToLog $(${jamfBinary} policy -event "enforce_FV2") # enforce filevault
 
 writeToLog "Setting up standard dock..."
-${jamfBinary} policy -event "set_dock" # set standard dock
+writeToLog $(${jamfBinary} policy -event "set_dock") # set standard dock
 
 writeToLog "Update computer inventory"
-${jamfBinary} policy -event "update_Inventory" # update computer inventory
+writeToLog $(${jamfBinary} policy -event "update_Inventory") # update computer inventory
 
 writeToJamfLog "Fake:Successfully installed setupfinish-1.0.0.pkg.."
 
@@ -136,5 +137,7 @@ kill "$caffeinatepid"
 # Log out user
 writeToLog "Logging user out to force FileVault encryption"
 kill -9 `pgrep loginwindow`
+
+comment1
 
 exit 0
