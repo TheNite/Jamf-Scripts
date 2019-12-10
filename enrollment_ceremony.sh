@@ -17,8 +17,16 @@ loggedInUser() {
 	/bin/ls -l /dev/console | /usr/bin/awk '{ print $3 }'
 }
 
-writeToLog() {
+checkForRoot() {
 	if [[ "$(/usr/bin/id -u)" -eq 0 ]]; then # check for root access
+		echo "Root access found"
+	else
+		echo "Root access not found"
+		exit 1
+	fi
+}
+
+writeToLog() {
 		if [[ -f "$logFile" ]];then #Check if file exist
 			echo $@
 			echo $currentTime $scriptName: $@ >> $logFile
@@ -28,10 +36,6 @@ writeToLog() {
 			echo $currentTime $scriptName "Created log file....." >> $logFile
 			echo $currentTime $scriptName $@ >> $logFile
 		fi
-	else
-		echo "Root access not found"
-		exit 1
-	fi
 }
 
 # Used to trick Ceremony app monitoring (ghost packages)
@@ -41,20 +45,27 @@ writeToJamfLog() {
 	echo $currentTime $scriptName $@ >> $jamfLog
 }
 
-# Check current login user
-writeToLog "Checking login user is not root or _mbsetup before contining"
+#Check current root status
+checkForRoot
 
-while [[ $(loggedInUser) = "_mbsetup" ]] || [[ $(loggedInUser) = "root" ]]; do
+# Caffeinate computer so it doesn't follow as sleep
+caffeinate -d -i -m -s -u &
+caffeinatepid=$! 
+writeToLog "Caffeinated computer: $caffeinatepid"
+
+# Check current login user
+writeToLog "Checking login user is not root or _mbsetupuser before contining. Current user: $(loggedInUser)"
+
+
+while [[ $(loggedInUser) = "_mbsetupuser" ]] || [[ $(loggedInUser) = "root" ]]; do
 	sleep 1
 done
 
 writeToLog "Current login user: $(loggedInUser)"
 
-# Caffeinate computer so it doesn't follow as sleep
-writeToLog "Caffeinate computer"
-caffeinate -d -i -m -s -u &
-caffeinatepid=$! 
-writeToLog "Caffeinatepid = $caffeinatepid"
+# Install Ceremony
+writeToLog "Installing Ceremony"
+writeToLog $(${jamfBinary} policy -event "install_ceremony")
 
 
 ##### Start of ceremony visuals #####
@@ -114,7 +125,6 @@ writeToJamfLog "Fake:Successfully installed setupfinish-1.0.0.pkg.."
 
 #### #### End Ceremonry visuals. #### ####
 
-
 ##### Ceremony post-install management
 
 writeToLog "Creating Ceremony done file at $doneFile"
@@ -138,6 +148,5 @@ kill "$caffeinatepid"
 writeToLog "Logging user out to force FileVault encryption"
 kill -9 `pgrep loginwindow`
 
-comment1
 
 exit 0
