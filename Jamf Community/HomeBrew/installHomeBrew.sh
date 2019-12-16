@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 #
 # Script Name: installHomebrew.sh
 # Function: Deploy Homebrew (brew.sh) to the first user added to a new Mac during the post-DEP enrollment SplashBuddy run
@@ -30,9 +30,9 @@ then
     # Verify softwareupdate installs only the latest XCode (Original code from https://github.com/rtrouton/rtrouton_scripts)
     cmd_line_tools=$(softwareupdate -l | awk '/\*\ Command Line Tools/ { $1=$1;print }' | grep "$osx_vers" | sed 's/^[[ \t]]*//;s/[[ \t]]*$//;s/*//' | cut -c 2-)
     if (( $(grep -c . <<<"$cmd_line_tools") > 1 )); then
-     cmd_line_tools_output="$cmd_line_tools"
-     cmd_line_tools=$(printf "$cmd_line_tools_output" | tail -1)
-  fi
+       cmd_line_tools_output="$cmd_line_tools"
+       cmd_line_tools=$(printf "$cmd_line_tools_output" | tail -1)
+    fi
     softwareupdate -i "$cmd_line_tools"
     rm -f /tmp/.com.apple.dt.CommandLineTools.installondemand.in-progress
     /usr/bin/xcode-select --switch /Library/Developer/CommandLineTools
