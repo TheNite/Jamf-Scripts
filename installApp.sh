@@ -24,7 +24,7 @@ timeStamp=$(date +"%F %T")
 pkgName=$(basename "$downloadUrl")
 
 # Directory where the file will be downloaded to
-downloadDirectory="/COMPANY/Downloaded"
+downloadDirectory="/Users/Shared/COMPANY/Downloaded"
 
 # Directory where DMG would be mounted to
 dmgMount="$downloadDirectory/mount"
@@ -60,21 +60,21 @@ cleanUp(){
 }
 
 installDmg() {
-		# If container is a .dmg:
-			# Mount installer container
-			# -nobrowse to hide the mounted .dmg
-			# -noverify to skip .dmg verification
-			# -mountpoint to specify mount point
-			hdiutil attach $downloadDirectory/$pkgName -nobrowse -noverify -mountpoint $dmgMount
-			if [ -e "$dmgMount"/*.app ]; then
-				printf "Found .app inside DMG \n"
-      			cp -pPR "$dmgMount"/*.app /Applications
-    		elif [ -e "$dmgMount"/*.pkg ]; then
-    			print "Found .pkg inside dmg \n"
-      			pkgName=$(ls -1 "$dmgMount" | grep .pkg | head -1)
-      			installer -allowUntrusted -verboseR -pkg "$dmgMount"/"$pkgName" -target /
-    		fi
-    		hdiutil detach $dmgMount
+	# If container is a .dmg:
+	# Mount installer container
+	# -nobrowse to hide the mounted .dmg
+	# -noverify to skip .dmg verification
+	# -mountpoint to specify mount point
+	hdiutil attach $downloadDirectory/$pkgName -nobrowse -noverify -mountpoint $dmgMount
+	if [ -e "$dmgMount"/*.app ]; then
+		printf "Found .app inside DMG \n"
+      	cp -pPR "$dmgMount"/*.app /Applications
+    elif [ -e "$dmgMount"/*.pkg ]; then
+    	print "Found .pkg inside dmg \n"
+      	pkgName=$(ls -1 "$dmgMount" | grep .pkg | head -1)
+      	installer -allowUntrusted -verboseR -pkg "$dmgMount"/"$pkgName" -target /
+    fi
+    hdiutil detach $dmgMount
 }
 
 
