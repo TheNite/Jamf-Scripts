@@ -54,7 +54,7 @@ caffeinatepid=$!
 writeToLog "Caffeinated computer: $caffeinatepid"
 
 # Check current login user
-writeToLog "Checking login user is not root or _mbsetupuser before contining. Current user: $(loggedInUser)"
+writeToLog "Checking login user is not root or _mbsetupuser 1 before contining. Current user: $(loggedInUser)"
 
 
 while [[ $(loggedInUser) = "_mbsetupuser" ]] || [[ $(loggedInUser) = "root" ]]; do
@@ -63,10 +63,11 @@ done
 
 writeToLog "Current login user: $(loggedInUser)"
 
+<< 'Comment1'
 # Install Ceremony
 writeToLog "Installing Ceremony"
 writeToLog $(${jamfBinary} policy -event "install_ceremony")
-
+Comment1
 
 ##### Start of ceremony visuals #####
 
@@ -90,7 +91,7 @@ writeToLog $(${jamfBinary} policy -event "install_1password")
 writeToJamfLog "Fake:Successfully installed 1Password-1.0.0.pkg.."
 
 writeToJamfLog "Fake:Installing homebrew-1.0.0.pkg..."
-writeToLog $(${jamfBinary} policy -event "isntall_homebrew")
+writeToLog $(${jamfBinary} policy -event "install_homebrew")
 writeToJamfLog "Fake:Successfully installed homebrew-1.0.pkg.."
 
 writeToJamfLog "Fake:Installing Zoom-1.0.0.pkg..."
