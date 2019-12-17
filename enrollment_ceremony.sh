@@ -72,11 +72,11 @@ done
 
 writeToLog "Current login user: $(loggedInUser)"
 
-<< 'Comment1'
+
 # Install Ceremony
 writeToLog "Installing Ceremony"
 writeToLog $(${jamfBinary} policy -event "install_ceremony")
-Comment1
+
 
 ##### Start of ceremony visuals #####
 
