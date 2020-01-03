@@ -14,7 +14,7 @@ scriptName=$(basename -- "$0")
 doneFile="/Users/Shared/.CeremonyDone"
 
 loggedInUser() {
-	/bin/ls -l /dev/console | /usr/bin/awk '{ print $3 }'
+	/bin/ls -l /dev/console | /usr/bin/awk '{ print $3 }'	
 }
 
 checkForRoot() {
@@ -45,11 +45,17 @@ writeToJamfLog() {
 	echo $currentTime $scriptName $@ >> $jamfLog
 }
 
+# Caffeinate computer so it doesn't follow as sleep
+caffeinate -d -i -m -s -u &
+caffeinatepid=$   ! 
+writeToLog "Caffeinated computer: $caffeinatepid"
+
 # Checking to see if the Finder is running now before continuing. This can help
 # in scenarios where an end user is not configuring the device.
+# This is also a requirement for catalina to make sure things are run properly
 FINDER_PROCESS=$(pgrep -l "Finder")
 until [ "$FINDER_PROCESS" != "" ]; do
-	echo "$(date "+%a %h %d %H:%M:%S"): Finder process not found. Assuming device is at login screen." >> "$DEP_NOTIFY_DEBUG"
+	writeToLog "Finder process not found. Assuming device is at login screen."
 	sleep 1
 	FINDER_PROCESS=$(pgrep -l "Finder")
 done
@@ -57,13 +63,8 @@ done
 #Check current root status
 checkForRoot
 
-# Caffeinate computer so it doesn't follow as sleep
-caffeinate -d -i -m -s -u &
-caffeinatepid=$! 
-writeToLog "Caffeinated computer: $caffeinatepid"
-
 # Check current login user
-writeToLog "Checking login user is not root or _mbsetupuser 1 before contining. Current user: $(loggedInUser)"
+writeToLog "Checking login user is not root or _mbsetupuser before contining. Current user: $(loggedInUser)"
 
 
 while [[ $(loggedInUser) = "_mbsetupuser" ]] || [[ $(loggedInUser) = "root" ]]; do
@@ -72,10 +73,16 @@ done
 
 writeToLog "Current login user: $(loggedInUser)"
 
+# Update computer inventory so things run as current loggedin user
+writeToLog "Update computer inventory"
+writeToLog $(${jamfBinary} policy -event "update_Inventory") # update computer inventory
 
 # Install Ceremony
 writeToLog "Installing Ceremony"
 writeToLog $(${jamfBinary} policy -event "install_ceremony")
+
+writeToLog "Waiting 15 seconds before continuing"
+sleep 15
 
 
 ##### Start of ceremony visuals #####
@@ -157,6 +164,5 @@ kill "$caffeinatepid"
 # Log out user
 writeToLog "Logging user out to force FileVault encryption"
 kill -9 `pgrep loginwindow`
-
 
 exit 0
