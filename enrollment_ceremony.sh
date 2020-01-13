@@ -45,6 +45,10 @@ writeToJamfLog() {
 	echo $currentTime $scriptName $@ >> $jamfLog
 }
 
+while [[ $(loggedInUser) = "_mbsetupuser" ]] || [[ $(loggedInUser) = "root" ]]; do
+	sleep 1
+done
+
 # Caffeinate computer so it doesn't follow as sleep
 caffeinate -d -i -m -s -u &
 caffeinatepid=$   ! 
@@ -55,7 +59,7 @@ writeToLog "Caffeinated computer: $caffeinatepid"
 # This is also a requirement for catalina to make sure things are run properly
 FINDER_PROCESS=$(pgrep -l "Finder")
 until [ "$FINDER_PROCESS" != "" ]; do
-	writeToLog "Finder process not found. Assuming device is at login screen."
+	echo "Finder process not found. Assuming device is at login screen."
 	sleep 1
 	FINDER_PROCESS=$(pgrep -l "Finder")
 done
@@ -64,13 +68,6 @@ done
 checkForRoot
 
 # Check current login user
-writeToLog "Checking login user is not root or _mbsetupuser before contining. Current user: $(loggedInUser)"
-
-
-while [[ $(loggedInUser) = "_mbsetupuser" ]] || [[ $(loggedInUser) = "root" ]]; do
-	sleep 1
-done
-
 writeToLog "Current login user: $(loggedInUser)"
 
 # Update computer inventory so things run as current loggedin user
