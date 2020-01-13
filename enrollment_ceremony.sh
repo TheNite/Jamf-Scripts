@@ -14,6 +14,7 @@ scriptName=$(basename -- "$0")
 doneFile="/Users/Shared/.CeremonyDone"
 
 loggedInUser() {
+	# Apple macOS 10.14+ approved way of getting the current login user
 	/bin/ls -l /dev/console | /usr/bin/awk '{ print $3 }'	
 }
 

@@ -77,13 +77,16 @@ function dockutil_all() {
 	done
 }
 
-# Cleanup
 
 if [[ "$macos_vers" -ge 15 ]]; then
 	dockutil_catalina
 else
 	dockutil_all
 fi
+
+defaults write com.apple.dock show-recents -bool FALSE
+
+# Cleanup
 
 sleep $sleepTime
 
