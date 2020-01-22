@@ -18,15 +18,6 @@ loggedInUser() {
 	/bin/ls -l /dev/console | /usr/bin/awk '{ print $3 }'	
 }
 
-checkForRoot() {
-	if [[ "$(/usr/bin/id -u)" -eq 0 ]]; then # check for root access
-		echo "Root access found"
-	else
-		echo "Root access not found"
-		exit 1
-	fi
-}
-
 writeToLog() {
 		if [[ -f "$logFile" ]];then #Check if file exist
 			echo $@
@@ -46,15 +37,6 @@ writeToJamfLog() {
 	echo $currentTime $scriptName $@ >> $jamfLog
 }
 
-while [[ $(loggedInUser) = "_mbsetupuser" ]] || [[ $(loggedInUser) = "root" ]]; do
-	sleep 1
-done
-
-# Caffeinate computer so it doesn't follow as sleep
-caffeinate -d -i -m -s -u &
-caffeinatepid=$   ! 
-writeToLog "Caffeinated computer: $caffeinatepid"
-
 # Checking to see if the Finder is running now before continuing. This can help
 # in scenarios where an end user is not configuring the device.
 # This is also a requirement for catalina to make sure things are run properly
@@ -65,8 +47,15 @@ until [ "$FINDER_PROCESS" != "" ]; do
 	FINDER_PROCESS=$(pgrep -l "Finder")
 done
 
-#Check current root status
-checkForRoot
+# Caffeinate computer so it doesn't follow as sleep
+caffeinate -d -i -m -s -u &
+caffeinatepid=$   ! 
+writeToLog "Caffeinated computer: $caffeinatepid"
+
+# double check user is not the setup user or root
+while [[ $(loggedInUser) = "_mbsetupuser" ]] || [[ $(loggedInUser) = "root" ]]; do
+	sleep 1
+done
 
 # Check current login user
 writeToLog "Current login user: $(loggedInUser)"
@@ -79,8 +68,8 @@ writeToLog $(${jamfBinary} policy -event "update_Inventory") # update computer i
 writeToLog "Installing Ceremony"
 writeToLog $(${jamfBinary} policy -event "install_ceremony")
 
-writeToLog "Waiting 15 seconds before continuing"
-sleep 15
+writeToLog "Waiting 5 seconds before continuing"
+sleep 5
 
 
 ##### Start of ceremony visuals #####
