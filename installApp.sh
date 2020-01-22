@@ -137,11 +137,13 @@ downloadFile() {
 		pkgName="postman"
 		downloadExt="zip"
 		curl -O -A $userAgent -L $downloadUrl > $downloadDirectory/postman.zip
+<<'DisableSlack'
 	elif [[ "$downloadUrl" == *"slack"* ]]; then
 		echo "Downloading Slack"
 		pkgName="slack"
 		downloadExt="dmg"
 		curl -O -A $userAgent -L $downloadUrl > $downloadDirectory/slack.dmg
+DisableSlack
 	else
 		curl $downloadUrl -O -L #Download file without changing its name.
 	fi
