@@ -102,7 +102,7 @@ writeToLog $(${jamfBinary} policy -event "install_zoomclient")
 writeToJamfLog "Fake:Successfully installed Zoom-1.0.0.pkg.."
 
 writeToJamfLog "Fake:Installing office365-1.0.0.pkg..."
-writeToLog $(${jamfBinary} policy -event	"install_office365")
+writeToLog $(${jamfBinary} policy -event "install_office365")
 writeToJamfLog "Fake:Successfully installed office365-1.0.0.pkg.."
 
 
