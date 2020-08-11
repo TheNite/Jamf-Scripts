@@ -15,8 +15,8 @@
 # Apple approved way to get the currently logged in user (Thanks to Froger from macadmins.org and https://developer.apple.com/library/content/qa/qa1133/_index.html)
 ConsoleUser="$(/usr/bin/python -c 'from SystemConfiguration import SCDynamicStoreCopyConsoleUser; import sys; username = (SCDynamicStoreCopyConsoleUser(None, None, None) or [None])[0]; username = [username,""][username in [u"loginwindow", None, u""]]; sys.stdout.write(username + "\n");')"
 # Define the brews and casks we want to install
-brews=(ansible awscli csshx dc3dd dockutil git-crypt git-flow git-lfs gnu-sed jq packer rbenv ruby-build telnet terraform thefuck watch wget adoptopenjdk8 powershell vault kubectx jq helm htop python3)
-casks=(aerial) # Be careful not to install casks that require prompting for sudo. This will not work in an automated fashion and will break the script.
+brews=(ansible awscli csshx dc3dd dockutil git-crypt git-flow git-lfs gnu-sed jq packer rbenv ruby-build telnet terraform thefuck watch wget adoptopenjdk8 powershell vault kubectx jq helm htop python3 spark scala kubectl sbt)
+casks=(aerial virtualbox) # Be careful not to install casks that require prompting for sudo. This will not work in an automated fashion and will break the script.
 
 # Check if the brew is already installed. If not, install it
 for brew in ${brews[@]}; do

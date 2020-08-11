@@ -119,6 +119,9 @@ writeToLog $(${jamfBinary} policy -event "install_homebrew_packages") # install 
 writeToLog "enforcing filevault2"
 writeToLog $(${jamfBinary} policy -event "enforce_FV2") # enforce filevault
 
+writeToLog "enforcing filevault2"
+writeToLog $(${jamfBinary} policy -event "install_docker") # enforce filevault
+
 writeToLog "Setting up standard dock..."
 writeToLog $(${jamfBinary} policy -event "set_dock") # set standard dock
 
