@@ -49,7 +49,7 @@ done
 
 # Caffeinate computer so it doesn't follow as sleep
 caffeinate -d -i -m -s -u &
-caffeinatepid=$   ! 
+caffeinatepid=$! 
 writeToLog "Caffeinated computer: $caffeinatepid"
 
 # double check user is not the setup user or root

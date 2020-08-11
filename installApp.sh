@@ -83,7 +83,6 @@ installZippedApp() {
 	echo "Unzipping......please wait"
 	wait
 	echo "Finish unzipping"
-
 	if [ -e "$downloadDirectory"/*.app ]; then
 		printf "Extracted .app file......\nCopying application to Applications folder\n"
 		cp -pPR $downloadDirectory/*.app /Applications
