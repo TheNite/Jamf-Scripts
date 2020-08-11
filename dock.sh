@@ -15,7 +15,7 @@ Apps=("Firefox.app" "Slack.app" "Sublime Text.app" "1Password 7.app" "Messages.a
 
 #Default systems that are installed in the '/Applications/Utitlies/' directory
 system_utilities_apps=("Terminal.app")
-
+ 
 #System defautl apps that are installed in the '/Applications/' OR for Catalina in '/System/Applications/' directory
 system_default_apps=("System Preferences.app")
 
@@ -57,7 +57,7 @@ function dockutil_catalina {
 		$dockutil --add "/System/$utilAppFolder/${app}" --no-restart --allhomes
 	done
 
-	for folder in "${userFolders[@]}"; do
+	for folder in "${user_folders[@]}"; do
 		$dockutil --add "~/${folder}" --no-restart --allhomes
 	done
 }
@@ -72,7 +72,7 @@ function dockutil_all() {
 		$dockutil --add "$utilAppFolder/${app}" --no-restart --allhomes
 	done
 
-	for folder in "${userFolders[@]}"; do
+	for folder in "${user_folders[@]}"; do
 		$dockutil --add "~/${folder}" --no-restart --allhomes
 	done
 }
