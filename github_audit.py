@@ -6,7 +6,7 @@ token = '' # Github Access Token
 gh = Github(token)
 
 # Setting up Variables
-csv_file = 'githubAduit.csv'
+csv_file = 'githubAudit.csv'
 dict = {}
 
 # Repos to Audit

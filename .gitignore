@@ -467,3 +467,10 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
+.idea/.gitignore
+.idea/Jamf-Scripts.iml
+.idea/inspectionProfiles/
+.idea/misc.xml
+.idea/modules.xml
+.idea/sonarlint/
+.idea/vcs.xml
